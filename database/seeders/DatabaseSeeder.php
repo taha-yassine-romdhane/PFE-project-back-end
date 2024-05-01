@@ -19,11 +19,14 @@ class DatabaseSeeder extends Seeder
              'name' => 'Taha',
              'email' => 'tahayassine@example.com',
              'password' =>Hash::make('12341234'),
+             'telephone'=>'95458811'
          ]);
          \App\Models\User::factory()->create([
             'name' => 'adem',
             'email' => 'adem@example.com',
             'password' =>Hash::make('00000000'),
+            'role'=>'Admin',
+            'telephone'=>'123452351'
         ]);
     }
 }

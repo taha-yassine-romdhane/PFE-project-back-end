@@ -2,23 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Folder extends Model
 {
-    use HasFactory;
-    protected $fillable = ['id','name','folder_state','file_state','file',  'id_category','id_user'  ];
-    public function users()
+    protected $fillable = ['name', 'parent_id'];
+
+
+    public function parent()
     {
-        return $this->belongsTo(user::class);
+        return $this->belongsTo(Folder::class, 'parent_id');
     }
-    public function historys()
+
+    public function children()
     {
-        return $this->belongsTo(folder::class);
+        return $this->hasMany(Folder::class, 'parent_id');
     }
-    public function category_models()
+    public function pdfFiles()
     {
-        return $this->hasMany(category_model::class);
+        return $this->hasMany(PdfFile::class, 'parent_id' );
     }
+    public function categories()
+{
+    return $this->hasMany(Category::class);
+}
 }
