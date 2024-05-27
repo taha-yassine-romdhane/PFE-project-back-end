@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Folder extends Model
 {
-    protected $fillable = ['name', 'parent_id'];
+    protected $fillable = ['name', 'parent_id','user_id'];
 
 
     public function parent()
@@ -23,7 +23,7 @@ class Folder extends Model
         return $this->hasMany(PdfFile::class, 'parent_id' );
     }
     public function categories()
-{
-    return $this->hasMany(Category::class);
-}
+    {
+        return $this->hasMany(Category::class);
+    }
 }

@@ -11,7 +11,7 @@ class CreatePdfFilesTable extends Migration
         Schema::create('pdf_files', function (Blueprint $table) {
             $table->id();
             $table->string('filename');
-            $table->binary('file_data')->nullable();
+            $table->text('file_data')->nullable();
             $table->integer('folder_id')->nullable();
 
             $table->string('file_path');

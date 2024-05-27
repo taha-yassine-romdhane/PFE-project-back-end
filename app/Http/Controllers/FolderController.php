@@ -62,23 +62,38 @@ class FolderController extends Controller
     }
 }
 
-    public function store(Request $request)
-    {
-        try {
-            // Validation
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'parent_id' => 'nullable|exists:folders,id',
-            ]);
+public function store(Request $request)
+{
+    try {
+        // Validation
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:folders,id',
+            'user_id' => 'nullable|exists:users,id', // Validate the user_id
+        ]);
 
-            // Create folder
-            $folder = Folder::create($request->all());
+        // Log user information
+        $user = $request->user();
+        \Log::info('Creating folder', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+            'name' => $request->name,
+            'parent_id' => $request->parent_id,
+        ]);
 
-            return response()->json($folder, 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create folder: ' . $e->getMessage()], 500);
-        }
+        // Create folder with the user_id
+        $folder = Folder::create([
+            'name' => $request->name,
+            'parent_id' => $request->parent_id,
+            'user_id' => $request->user_id,
+        ]);
+
+        return response()->json($folder, 201);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to create folder: ' . $e->getMessage()], 500);
     }
+}
+
 
     public function update(Request $request, $id)
     {
