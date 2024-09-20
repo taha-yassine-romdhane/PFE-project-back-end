@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Folder;
 class UserController extends Controller
 {
@@ -46,6 +47,7 @@ class UserController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
             $token = $user->createToken('AuthToken')->plainTextToken;
+            
             return response()->json(['token' => $token], 200);
         }
 
@@ -76,20 +78,16 @@ class UserController extends Controller
             return response()->json(['message' => 'Something went wrong while updating user.'], 500);
         }
     }
-
+    
     public function destroy($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
-        }
+        $user = User::findOrFail($id);
+        
 
-        try {
-            $user->delete();
-            return response()->json(['message' => 'User deleted successfully.'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Something went wrong while deleting user.'], 500);
-        }
+
+         $user->delete();
+        
+        return response()->json(['message' => 'User deleted successfully.'], 200);
     }
     public function storeChildFolder(Request $request)
     {

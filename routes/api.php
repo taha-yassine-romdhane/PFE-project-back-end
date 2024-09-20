@@ -8,7 +8,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GeneratedTextController;
 use App\Http\Controllers\BoxController;
-
+use App\Http\Controllers\KeywordController;
 use App\Http\Controllers\ImageController;
 
 /*
@@ -58,7 +58,6 @@ Route::get('/pdf_files/{id}/path', [PdfFileController::class, 'getFilePathById']
 // Folder routes
 Route::get('/folders', [FolderController::class, 'index']);
 Route::get('/folders/{id}', [FolderController::class, 'indexx']);
-
 Route::put('/folders/{id}', [FolderController::class, 'update']);
 Route::delete('/folders/{id}', [FolderController::class, 'destroy']);
 Route::post('/api/folders/{id}', [FolderController::class, 'storeChildFolder']);
@@ -72,11 +71,11 @@ Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 Route::put('/categories/{id}', [CategoryController::class, 'update']);
 
 Route::post('/save-image-and-category', [CategoryController::class, 'saveImageAndCategory']);
+
 Route::get('/api/test-modal-data', [BoxController::class, 'getTestModalData']);
 Route::get('/boxes/{categoryId}', [BoxController::class, 'getBoxesByCategory']);
 Route::get('/categories', [BoxController::class, 'getCategories']);
 
-Route::get('/folders', [FolderController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/boxes', [BoxController::class, 'index']);
 Route::delete('/boxes/{id}', [BoxController::class, 'destroy']);
@@ -89,12 +88,11 @@ Route::get('/images/{pdf_id}', [ImageController::class, 'getImagesByPdfId']);
 
 Route::get('/images', [ImageController::class, 'getAllImages']);
 
-
-
 // routes/api.php
+Route::apiResource('keywords', KeywordController::class);
 
-
-
+// API routes for fetching PDFs and images
+Route::get('/pdfs-with-images', [PdfFileController::class, 'getPdfsWithImages']);
 Route::post('/store-generated-texts', [GeneratedTextController::class, 'store']);
 
 require __DIR__ . '/auth.php';

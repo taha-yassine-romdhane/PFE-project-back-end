@@ -16,4 +16,9 @@ class PdfFile extends Model
     {
         return $this->belongsTo( Folder::class );
     }
+      // Define the relationship with the Image model
+      public function images()
+      {
+          return $this->hasMany(Image::class, 'pdf_id');
+      }
 }

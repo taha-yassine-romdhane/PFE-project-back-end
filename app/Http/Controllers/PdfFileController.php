@@ -37,6 +37,8 @@ class PdfFileController extends Controller
                 mkdir($outputFolder, 0777, true);
             }
     
+            Log::info('Sending to Flask API:', ['pdf_id' => $pdfFile->id, 'output_folder' => $outputFolder]);
+    
             $client = new Client();
             $response = $client->post('http://localhost:5000/convert', [
                 'json' => [
@@ -46,16 +48,31 @@ class PdfFileController extends Controller
             ]);
     
             $conversionOutput = json_decode($response->getBody()->getContents(), true);
+            Log::info('Conversion Output:', $conversionOutput); // Log the conversion output
     
             $uploadedFiles[] = [
                 'pdfFile' => $pdfFile,
-                'filePath' => $pdfFile->file_path,
+                'filePath' => $pdfFile->$filePath,
                 'conversion_output' => $conversionOutput,
             ];
         }
     
         return response()->json(['message' => 'PDF files stored and converted successfully', 'files' => $uploadedFiles]);
     }
+     // Method to get PDFs with their associated images
+     public function getPdfsWithImages()
+    {
+        $pdfFiles = PdfFile::with('images')->get();
+
+        // Build the response and set CORS headers
+        return response()->json($pdfFiles)
+            ->header('Access-Control-Allow-Origin', 'http://localhost:3000')  // Adjust the allowed origin as needed
+            ->header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+            ->header('Access-Control-Allow-Credentials', 'true');   
+    }
+
+
     public function index()
     {
         $documents = PdfFile::all(); // Fetch all documents from the pdf_files table
@@ -90,13 +107,7 @@ class PdfFileController extends Controller
         }
 
         return response()->file($filePath);
-    }
-    
-    
-    
-    
-    
-    
+    }    
     public function delete($id)
     {
         $pdfFile = PdfFile::find($id);

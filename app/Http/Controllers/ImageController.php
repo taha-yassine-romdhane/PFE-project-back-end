@@ -17,4 +17,30 @@ class ImageController extends Controller
         $images = Image::all();
         return response()->json($images);
     }
+    public function copyImage($folder, $filename)
+    {
+        $sourcePath = storage_path('app/public/pdf_images/' . $folder . '/' . $filename);
+        $destinationPath = storage_path('app/public/temp_images/' . $filename);
+
+        if (!File::exists($sourcePath)) {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+
+        File::copy($sourcePath, $destinationPath);
+
+        return response()->json(['path' => '/storage/temp_images/' . $filename]);
+    }
+
+    public function deleteImage($filename)
+    {
+        $path = storage_path('app/public/temp_images/' . $filename);
+
+        if (File::exists($path)) {
+            File::delete($path);
+            return response()->json(['message' => 'File deleted successfully']);
+        }
+
+        return response()->json(['message' => 'File not found'], 404);
+    }
+
 }

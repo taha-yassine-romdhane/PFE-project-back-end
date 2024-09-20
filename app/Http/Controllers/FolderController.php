@@ -69,16 +69,7 @@ public function store(Request $request)
         $request->validate([
             'name' => 'required|string|max:255',
             'parent_id' => 'nullable|exists:folders,id',
-            'user_id' => 'nullable|exists:users,id', // Validate the user_id
-        ]);
-
-        // Log user information
-        $user = $request->user();
-        \Log::info('Creating folder', [
-            'user_id' => $user->id,
-            'user_email' => $user->email,
-            'name' => $request->name,
-            'parent_id' => $request->parent_id,
+            'user_id' => 'nullable |exists:users,id', // Validate the user_id
         ]);
 
         // Create folder with the user_id
